@@ -45,5 +45,10 @@ inscricoes = Table(
     Column("curso_id", Integer, ForeignKey("cursos.id"), primary_key=True),
 )
 
+#Conexão com db
+engine = create_engine("sqlite:///gestao_escolar.db")
 
+Base.metadata.create_all(engine)
+
+Session = sessionmaker(bind=engine)
 
