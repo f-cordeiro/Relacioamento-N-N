@@ -153,4 +153,87 @@ def listar_alunos():
 
 #Atualizar
 
+
+def atualizar_curso():
+    with Session() as session:
+        try:
+            nome_antigo = input("Digite o nome do curso que deseja alterar: ").capitalize()
+            curso = session.query(Curso).filter_by(nome=nome_antigo).first()
+
+            if curso:
+                novo_nome = input(f"Digite o novo nome para o curso '{nome_antigo}': ").capitalize()
+                curso.nome = novo_nome
+                session.commit()
+                print(f"Curso atualizado com sucesso de '{nome_antigo}' para '{novo_nome}'!")
+            else:
+                print(f"Curso '{nome_antigo}' não encontrado.")
+        except Exception as erro:
+            session.rollback()
+            print(f"Ocorreu um erro ao atualizar o curso: {erro}")
+
+# atualizar_curso()
+
+def atualizar_aluno():
+    with Session() as session:
+        try:
+            nome_antigo = input("Digite o nome do aluno que deseja alterar: ").capitalize()
+            aluno = session.query(Aluno).filter_by(nome=nome_antigo).first()
+
+            if aluno:
+                novo_nome = input(f"Digite o novo nome para o aluno '{nome_antigo}': ").capitalize()
+                aluno.nome = novo_nome
+                session.commit()
+                print(f"Nome do aluno atualizado com sucesso!")
+            else:
+                print(f"Aluno '{nome_antigo}' não encontrado.")
+        except Exception as erro:
+            session.rollback()
+            print(f"Ocorreu um erro ao atualizar o aluno: {erro}")
+
+# atualizar_aluno()
+
 #Deletar
+
+def deletar_curso():
+    with Session() as session:
+        try:
+            nome_curso = input("Digite o nome do curso que deseja deletar: ").capitalize()
+            curso = session.query(Curso).filter_by(nome=nome_curso).first()
+
+            if curso:
+                confirmar = input(f"Tem certeza que deseja deletar o curso '{nome_curso}'? (S/N): ").upper()
+                if confirmar == 'S':
+                    session.delete(curso)
+                    session.commit()
+                    print(f"Curso '{nome_curso}' deletado com sucesso!")
+                else:
+                    print("Operação cancelada.")
+            else:
+                print(f"Curso '{nome_curso}' não encontrado.")
+        except Exception as erro:
+            session.rollback()
+            print(f"Ocorreu um erro ao deletar o curso: {erro}")
+
+deletar_curso()
+
+def deletar_aluno():
+    with Session() as session:
+        try:
+            nome_aluno = input("Digite o nome do aluno que deseja deletar: ").capitalize()
+            aluno = session.query(Aluno).filter_by(nome=nome_aluno).first()
+
+            if aluno:
+                confirmar = input(f"Tem certeza que deseja deletar o aluno '{nome_aluno}'? (S/N): ").upper()
+                if confirmar == 'S':
+                    session.delete(aluno)
+                    session.commit()
+                    print(f"Aluno '{nome_aluno}' deletado com sucesso!")
+                else:
+                    print("Operação cancelada.")
+            else:
+                print(f"Aluno '{nome_aluno}' não encontrado.")
+        except Exception as erro:
+            session.rollback()
+            print(f"Ocorreu um erro ao deletar o aluno: {erro}")
+
+deletar_aluno()
