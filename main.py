@@ -13,6 +13,13 @@ from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 
 Base = declarative_base()
 
+#Tabela Intermediária
+inscricoes = Table(
+    "inscricoes", #nome da tabela
+    Base.metadata,
+    Column("aluno_id", Integer, ForeignKey("alunos.id"), primary_key=True),
+    Column("curso_id", Integer, ForeignKey("cursos.id"), primary_key=True),
+)
 
 # Tabelas curso e aluno
 class Aluno(Base):
@@ -21,6 +28,12 @@ class Aluno(Base):
     #Como cria uma coluna
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column(String(100), nullable=False)
+
+
+    #Relacionamento
+    cursos = relationship("Curso", secondary=inscricoes, back_populates="alunos")
+
+
 
     #Função para imprimir
     def __repr__(self):
@@ -33,17 +46,13 @@ class Curso(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column(String(100), nullable=False)
 
+    #Relacionamento
+    alunos = relationship("Aluno", secondary=inscricoes, back_populates="cursos")
+
     #Função para imprimir
     def __repr__(self):
         return f"ID: {self.id} - NOME: {self.nome}"
     
-#Tabela Intermediária
-inscricoes = Table(
-    "inscricoes", #nome da tabela
-    Base.metadata,
-    Column("aluno_id", Integer, ForeignKey("alunos.id"), primary_key=True),
-    Column("curso_id", Integer, ForeignKey("cursos.id"), primary_key=True),
-)
 
 #Conexão com db
 engine = create_engine("sqlite:///gestao_escolar.db")
@@ -68,7 +77,30 @@ def cadastrar_curso():
             session.rollback()
             print(f"Ocorreu um erro {erro}")
 
-#Listar
+def cadastrar_aluno():
+    with Session() as session:
+        try:
+            #Buscar o curso do aluno
+            nome_curso = input("Digite o nome do curso para cadastrar o aluno: ").capitalize()
+            curso = session.query(Curso).filter_by(nome=nome_curso).first()
+            if curso == None:
+                print(f"Nenhum curso encontrado com esse nome {nome_curso}")
+                return
+            else:
+                nome_aluno = input("Digite o nome do aluno para cadastrar: ").capitalize()
+                aluno = Aluno(nome=nome_aluno)
+                aluno.cursos.append(curso)
+
+                session.add(aluno)
+                session.commit()
+                print(f"Aluno cadastrado com sucesso!")
+        except Exception as erro:
+            session.rollback()
+            print(f"Ocorreu um erro {erro}")
+
+
+
+
 
 #Atualizar
 
