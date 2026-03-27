@@ -52,3 +52,24 @@ Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
 
+#Criar
+def cadastrar_curso():
+    with Session() as session:
+        try:
+            #Criar o objeto cruso
+            nome_curso = input("Digite o nome do curso: ").capitalize()
+            curso = Curso(nome=nome_curso)
+            #Adicionar no banco
+            session.add(curso)
+            #Salvar
+            session.commit()
+            print(f"Curso {nome_curso} cadastrado com sucesso!")
+        except Exception as erro:
+            session.rollback()
+            print(f"Ocorreu um erro {erro}")
+
+#Listar
+
+#Atualizar
+
+#Deletar
